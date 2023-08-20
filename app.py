@@ -188,7 +188,12 @@ def average_grades(enrollment_id):
         average = sum(grades) / len(grades)
         enrollment.final_grade = average
         session.commit()
-        return jsonify({'average': average}), 200
+        return jsonify({'average': average,
+                        'course_id': enrollment.subject.id,
+                        'course_name': enrollment.subject.name,
+                        'student_id': enrollment.student.id,
+                        'student_name': enrollment.student.name,
+                        }), 200
     else:
         session.close()
         return jsonify({'message': 'Enrollment not found'}), 404
