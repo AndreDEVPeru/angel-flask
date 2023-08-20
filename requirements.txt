@@ -1,0 +1,5 @@
+Flask==2.3.2
+Flask_Admin==1.6.1
+Flask_Cors==4.0.0
+Flask_Login==0.6.2
+SQLAlchemy==1.4.32
