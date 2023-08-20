@@ -15,6 +15,7 @@ from models import Teacher, Subject, Student, Grade, Exam, Enrollment
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 
 # Database setup
 engine = create_engine('sqlite:///university.db')
@@ -75,25 +76,27 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login():
+    content_type = request.headers.get('Content-Type')
     if request.method == 'OPTIONS':
         # Respond to preflight requests with necessary headers
         response = app.make_default_options_response()
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         return response
-    username = request.form.get('username')
-    password = request.form.get('password')
+    if 'application/json' in content_type:
+        request_json = request.get_json()
+        username = request_json.get('username')
+        password = request_json.get('password')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
 
     session = Session()
     teacher = session.query(Teacher).filter_by(username=username).first()
 
     if teacher and teacher.password == password:
         login_user(teacher)
-        response = make_response()
-        response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
-        response.set_cookie('your_cookie_name', 'your_cookie_value')
-        response.headers['lala'] = 'lala'
-
+        response = make_response(url_for('index'))
         return response
     else:
         return "Invalid login"
@@ -115,10 +118,7 @@ def dashboard():
 @app.route('/teacher/subjects', methods=['GET'])
 @login_required
 def get_teacher_subjects():
-    print("lalamon")
-    print("hola", request.headers)
     teacher = current_user
-
 
     if teacher:
         subjects = [{'id': subject.id, 'name': subject.name}
@@ -133,9 +133,10 @@ def get_subject_students(subject_id):
     subject = g.session.query(Subject).get(subject_id)
 
     if subject:
-        students = [{'id': student.id, 'name': student.name} for enrollment in
-                    subject.enrollments for student in enrollment.student]
-        return jsonify({'students': students}), 200
+        students = []
+        for enrollment in g.session.query(Enrollment).filter(Enrollment.subject == subject):
+            students = [{'id': enrollment.student_id, 'name': enrollment.student.name}]
+        return jsonify(students), 200
     else:
         return jsonify({'message': 'Subject not found'}), 404
 
@@ -155,4 +156,4 @@ def get_student_grades(student_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    app.run(debug=True, host='0.0.0.0', port=80)
