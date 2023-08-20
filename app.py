@@ -147,8 +147,7 @@ def grades_endpoint(enrollment_id):
     if request.method == 'GET':
         enrollment = session.query(Enrollment).get(enrollment_id)
         if enrollment:
-            grades = [{'id': grade.id,
-                       'exam_grade': grade.exam_grade,
+            grades = [{'exam_grade': grade.exam_grade,
                        'exam_id': grade.exam_id,
                        'exam_name': grade.exam.name}
                       for grade in enrollment.grades]

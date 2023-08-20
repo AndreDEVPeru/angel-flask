@@ -78,7 +78,6 @@ class Exam(Base):
 class Grade(Base):
     __tablename__ = 'grades'
 
-    id = Column(Integer, primary_key=True)
     enrollment_id = Column(Integer,
                            ForeignKey('enrollments.id'),
                            primary_key=True)
@@ -89,9 +88,6 @@ class Grade(Base):
 
     exam = relationship('Exam', back_populates='grades')
     enrollment = relationship('Enrollment', back_populates='grades')
-    __table_args__ = (UniqueConstraint('enrollment_id',
-                                       'exam_id',
-                                       name='_enrollment_exam_uc'),)
 
     def __str__(self):
         return (f"Grade {self.id}:"
