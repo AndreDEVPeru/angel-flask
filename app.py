@@ -199,5 +199,29 @@ def average_grades(enrollment_id):
         return jsonify({'message': 'Enrollment not found'}), 404
 
 
+
+@app.route('/grades/average/all/<enrollment_id>', methods=['GET'])
+def average_grades_all(enrollment_id):
+    session = Session()
+    enrollment = session.query(Enrollment).get(enrollment_id)
+    if enrollment:
+        enrollments = session.query(Enrollment).filter_by(
+            subject_id=enrollment.subject_id
+        ).all()
+        grades = []
+        for _enrollment in enrollments:
+            grades += [{
+                'student_average': _enrollment.final_grade,
+                'course_id': _enrollment.subject.id,
+                'course_name': _enrollment.subject.name,
+                'student_id': _enrollment.student.id,
+                'student_name': _enrollment.student.name,
+                'enrollment_id': _enrollment.id
+            }]
+        return jsonify(grades), 200
+    else:
+        session.close()
+        return jsonify({'message': 'Enrollment not found'}), 404
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)
