@@ -114,7 +114,8 @@ def get_subject_students(subject_id):
 
     if subject:
         students = []
-        for enrollment in g.session.query(Enrollment).filter(Enrollment.subject == subject):
+        for enrollment in session.query(Enrollment).filter(
+                Enrollment.subject == subject):
             students = [{'id': enrollment.student_id,
                          'name': enrollment.student.name,
                         'enrollment_id': enrollment.id
