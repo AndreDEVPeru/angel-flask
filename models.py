@@ -109,7 +109,7 @@ class Enrollment(Base):
 
     def __str__(self):
         return (f"Enrollment {self.id}:"
-                f" subject {self.subject.name},"
+                f" subject_id {self.subject_id},"
                 f" final_grade {self.final_grade}")
 
 
