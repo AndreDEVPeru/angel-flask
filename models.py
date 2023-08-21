@@ -90,7 +90,7 @@ class Grade(Base):
     enrollment = relationship('Enrollment', back_populates='grades')
 
     def __str__(self):
-        return (f"Grade {self.id}:"
+        return (f"Enrollment_id {self.enrollment_id}:"
                 f" exam {self.exam.name},"
                 f" exam_grade {self.exam_grade}")
 
