@@ -116,10 +116,10 @@ def get_subject_students(subject_id):
         students = []
         for enrollment in session.query(Enrollment).filter(
                 Enrollment.subject == subject):
-            students = [{'id': enrollment.student_id,
-                         'name': enrollment.student.name,
-                        'enrollment_id': enrollment.id
-                         }]
+            students.append({'id': enrollment.student_id,
+                             'name': enrollment.student.name,
+                             'enrollment_id': enrollment.id
+                             })
         return jsonify(students), 200
     else:
         session.close()  # Close the session in case of error
