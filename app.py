@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, g, render_template, url_for, \
     redirect, make_response
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 from flask_login import (LoginManager, login_user, login_required,
                          logout_user, current_user)
@@ -36,6 +37,7 @@ Session = sessionmaker(bind=engine)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+#db = SQLAlchemy(app)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -185,7 +187,7 @@ def average_grades(enrollment_id):
     enrollment = session.query(Enrollment).get(enrollment_id)
     if enrollment:
         grades = [grade.exam_grade for grade in enrollment.grades]
-        average = sum(grades) / len(grades)
+        average = int(sum(grades) / len(grades))
         enrollment.final_grade = average
         session.commit()
         return jsonify({'average': average,

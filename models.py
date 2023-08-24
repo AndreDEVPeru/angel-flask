@@ -101,7 +101,7 @@ class Enrollment(Base):
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey('students.id'))
     subject_id = Column(Integer, ForeignKey('subjects.id'))
-    final_grade = Column(Float)
+    final_grade = Column(Integer)
 
     subject = relationship('Subject', back_populates='enrollments')
     student = relationship('Student', back_populates='enrollments')
