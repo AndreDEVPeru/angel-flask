@@ -187,7 +187,7 @@ def average_grades(enrollment_id):
     enrollment = session.query(Enrollment).get(enrollment_id)
     if enrollment:
         grades = [grade.exam_grade for grade in enrollment.grades]
-        average = int(sum(grades) / len(grades))
+        average = int((grades[0] * 0.4) + (grades[1] * 0.3) + (grades[2] * 0.3))
         enrollment.final_grade = average
         session.commit()
         return jsonify({'average': average,
